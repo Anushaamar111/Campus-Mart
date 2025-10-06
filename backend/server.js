@@ -41,7 +41,6 @@ const allowedOrigins = [
   'http://localhost:3001', 
   'http://localhost:3002',
   'http://localhost:5173', // Vite default port
-  'https://campus-mart-frontend-chi.vercel.app', // Your deployed frontend
   process.env.FRONTEND_URL // Environment variable for flexibility
 ].filter(Boolean); // Remove undefined values
 
@@ -50,10 +49,18 @@ app.use(cors({
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
     
-    if (allowedOrigins.indexOf(origin) !== -1) {
+    // Check if origin matches allowed origins
+    const isAllowed = allowedOrigins.includes(origin) ||
+      // Allow any Vercel deployment URLs for campus-mart-frontend
+      /^https:\/\/campus-mart-frontend.*\.vercel\.app$/.test(origin) ||
+      // Allow any Vercel preview URLs for the project
+      /^https:\/\/campus-mart-frontend.*-anushas-projects.*\.vercel\.app$/.test(origin);
+    
+    if (isAllowed) {
       callback(null, true);
     } else {
       console.log('CORS blocked origin:', origin);
+      console.log('Allowed origins:', allowedOrigins);
       callback(new Error('Not allowed by CORS'));
     }
   },
@@ -79,6 +86,11 @@ app.get('/', (req, res) => {
     version: '1.0.0',
     status: 'healthy',
     timestamp: new Date().toISOString(),
+    cors: {
+      allowedOrigins: allowedOrigins,
+      frontendUrl: process.env.FRONTEND_URL,
+      requestOrigin: req.headers.origin
+    },
     endpoints: {
       health: '/api/health',
       auth: '/api/auth',
@@ -192,7 +204,17 @@ gracefulShutdown(server);
 import { Server } from 'socket.io';
 const io = new Server(server, {
   cors: {
-    origin: allowedOrigins,
+    origin: function (origin, callback) {
+      // Allow requests with no origin
+      if (!origin) return callback(null, true);
+      
+      // Check if origin matches allowed origins or Vercel patterns
+      const isAllowed = allowedOrigins.includes(origin) ||
+        /^https:\/\/campus-mart-frontend.*\.vercel\.app$/.test(origin) ||
+        /^https:\/\/campus-mart-frontend.*-anushas-projects.*\.vercel\.app$/.test(origin);
+      
+      callback(null, isAllowed);
+    },
     methods: ['GET', 'POST'],
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization']
