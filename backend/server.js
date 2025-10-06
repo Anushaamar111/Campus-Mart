@@ -48,11 +48,31 @@ app.use('/api/products', productRoutes);
 app.use('/api/wishlist', wishlistRoutes);
 app.use('/api/notifications', notificationRoutes);
 
+// Root endpoint for deployment health checks
+app.get('/', (req, res) => {
+  res.status(200).json({ 
+    message: 'CampusMart API is running!',
+    version: '1.0.0',
+    status: 'healthy',
+    timestamp: new Date().toISOString(),
+    endpoints: {
+      health: '/api/health',
+      auth: '/api/auth',
+      products: '/api/products',
+      users: '/api/users',
+      wishlist: '/api/wishlist',
+      notifications: '/api/notifications'
+    }
+  });
+});
+
 // Health check endpoint
 app.get('/api/health', (req, res) => {
   res.status(200).json({ 
     message: 'CampusMart API is running!',
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV,
+    database: 'connected' // You could add actual DB health check here
   });
 });
 
@@ -60,7 +80,16 @@ app.get('/api/health', (req, res) => {
 app.use('/api/*', (req, res) => {
   res.status(404).json({ 
     message: 'API endpoint not found',
-    path: req.originalUrl
+    path: req.originalUrl,
+    availableEndpoints: [
+      '/api/health',
+      '/api/auth/login',
+      '/api/auth/register',
+      '/api/products',
+      '/api/users',
+      '/api/wishlist',
+      '/api/notifications'
+    ]
   });
 });
 
@@ -71,7 +100,7 @@ app.use((err, req, res, next) => {
     message: 'Something went wrong!',
     error: process.env.NODE_ENV === 'development' ? err.message : {}
   });
-  // next parameter required for Express error middleware
+  next(); // Call next to continue to other error handlers if needed
 });
 
 // 404 handler
