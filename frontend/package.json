@@ -4,6 +4,7 @@
   "description": "Frontend for CampusMart - College Student Marketplace",
   "private": true,
   "dependencies": {
+    "@heroicons/react": "^2.2.0",
     "axios": "^1.5.0",
     "date-fns": "^2.30.0",
     "framer-motion": "^10.16.2",
