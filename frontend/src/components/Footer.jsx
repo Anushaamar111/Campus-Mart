@@ -19,29 +19,6 @@ const Footer = () => {
               Your campus marketplace connecting students to buy and sell used items at affordable prices. 
               Built by students, for students.
             </p>
-            <div className="flex space-x-4">
-              <a
-                href="#"
-                className="text-gray-400 hover:text-white transition-colors duration-200"
-                aria-label="GitHub"
-              >
-                <FiGithub size={20} />
-              </a>
-              <a
-                href="#"
-                className="text-gray-400 hover:text-white transition-colors duration-200"
-                aria-label="Twitter"
-              >
-                <FiTwitter size={20} />
-              </a>
-              <a
-                href="mailto:support@campusmart.com"
-                className="text-gray-400 hover:text-white transition-colors duration-200"
-                aria-label="Email"
-              >
-                <FiMail size={20} />
-              </a>
-            </div>
           </div>
 
           {/* Quick Links */}
@@ -92,16 +69,6 @@ const Footer = () => {
               </li>
             </ul>
           </div>
-        </div>
-
-        {/* Bottom Section */}
-        <div className="border-t border-gray-700 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-gray-400 text-sm">
-            © 2024 CampusMart. All rights reserved.
-          </p>
-          <p className="text-gray-400 text-sm flex items-center mt-4 md:mt-0">
-            Made with <FiHeart className="text-red-500 mx-1" size={16} /> for students
-          </p>
         </div>
       </div>
     </footer>
