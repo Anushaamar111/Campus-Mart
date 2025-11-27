@@ -1,6 +1,5 @@
 import express from 'express';
 import Product from '../models/Product.js';
-import User from '../models/User.js';
 import { authenticate, verifyCampus } from '../middleware/auth.js';
 
 const router = express.Router();
